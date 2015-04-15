@@ -1,4 +1,4 @@
-# interaptor
+# interaptor [![Circle CI](https://circleci.com/gh/vdemedes/interaptor.svg?style=svg)](https://circleci.com/gh/vdemedes/interaptor)
 
 Intercept HTTP requests for testing purposes. Uses [mitm](https://npmjs.com/package/mitm) under the hood.
 
@@ -30,6 +30,8 @@ request('http://api.digitalocean.com/v2/droplets', function (err, res, body) {
 
 
 ### Tests
+
+[![Circle CI](https://circleci.com/gh/vdemedes/interaptor.svg?style=svg)](https://circleci.com/gh/vdemedes/interaptor)
 
 ```
 $ make test
