@@ -4,7 +4,7 @@
   "description": "Intercept HTTP requests for testing",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha"
+    "test": "make test"
   },
   "repository": {
     "type": "git",
