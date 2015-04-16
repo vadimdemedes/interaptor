@@ -1,6 +1,6 @@
 {
   "name": "interaptor",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Intercept HTTP requests for testing",
   "main": "index.js",
   "scripts": {

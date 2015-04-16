@@ -52,17 +52,20 @@ class Interaptor {
    */
    
   static find (req) {
-    let method = req.method.toLowerCase();
-    let host = req.headers.host;
-    let path = req.url || req.uri.path;
+    // in node v0.10.x there is no
+    // - req.method
+    // - req.url or req.uri.path
+    let method = (req.method || '').toLowerCase();
+    let host = req.host || req.headers.host;
+    let path = req.url || (req.uri || {}).path;
     
     // find matching interceptors
     let interceptors = this.interceptors.filter(interceptor => {
       // if method, host and path match
       // interceptor is ok for this request
-      let methodMatches = interceptor.method ? (interceptor.method === method) : true;
-      let hostMatches   = interceptor.host   ? (interceptor.host === host)     : true;
-      let pathMatches   = interceptor.path   ? (interceptor.path === path)     : true;
+      let methodMatches = interceptor.method && method ? (interceptor.method === method) : true;
+      let hostMatches   = interceptor.host && host ? (interceptor.host === host) : true;
+      let pathMatches   = interceptor.path && path ? (interceptor.path === path) : true;
       
       return methodMatches && hostMatches && pathMatches;
     });
