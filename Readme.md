@@ -20,11 +20,15 @@ intercept('api.digitalocean.com')
 	.get('/v2/droplets') // intercept http://api.digitalocean.com/v2/droplets only
 	.set('Content-Type', 'application/json') // set Content-Type response header
 	.set(200) // set response status code
-	.set(droplets) // set response body (if object, will be JSON.stringify'ed)
+	.set('woohoo') // set response body (if object, will be JSON.stringify'ed)
 
 request('http://api.digitalocean.com/v2/droplets', function (err, res, body) {
 	// request was not sent to api.digitalocean.com
 	// request was intercepted by interaptor
+	
+	// res.headers['Content-Type'] === 'application/json'
+	// res.statusCode === 200
+	// body === 'woohoo'
 });
 ```
 
