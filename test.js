@@ -85,6 +85,21 @@ describe ('interaptor', function () {
     });
   });
   
+  it ('set body in a custom handler function', function (done) {
+    intercept('example.org')
+      .get('/some/path')
+      .set(function (req, res) {
+        res.write('hello');
+      });
+    
+    request('http://example.org/some/path', function (err, res, body) {
+      res.statusCode.should.equal(200);
+      body.should.equal('hello');
+      
+      done();
+    });
+  });
+  
   it ('assert headers and continue', function (done) {
     intercept('example.org')
       .get('/some/path')

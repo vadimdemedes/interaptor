@@ -27,13 +27,16 @@ class Interceptor extends EventEmitter {
     this.host = host;
     this.headers = {};
     this.statusCode = 200;
-    this.body = '';
+    this.body = null;
     
     // values to assert
     this._asserts = {
       headers: {},
       body: null
     };
+    
+    // custom handler function
+    this._respondFn = null;
   }
   
   
@@ -44,6 +47,9 @@ class Interceptor extends EventEmitter {
    * set('Content-Type', 'application/json')
    * set(200)
    * set('some response body')
+   * set(function (req, res) {
+   *
+   * })
    *
    * @api public
    */
@@ -62,6 +68,13 @@ class Interceptor extends EventEmitter {
     // status code
     if (arguments.length === 1 && is.number(a)) {
       this.statusCode = a;
+      
+      return this;
+    }
+    
+    // function
+    if (arguments.length === 1 && is.function(a)) {
+      this._respondFn = a;
       
       return this;
     }
@@ -138,6 +151,7 @@ class Interceptor extends EventEmitter {
     this.headers = null;
     this.body = null;
     this._asserts = null;
+    this._respondFn = null;
   }
   
   
@@ -208,6 +222,11 @@ class Interceptor extends EventEmitter {
     });
     
     res.statusCode = this.statusCode;
+    
+    if (this._respondFn) {
+      this._respondFn(req, res);
+    }
+    
     res.end(this.body);
   }
   
