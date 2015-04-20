@@ -35,8 +35,9 @@ class Interceptor extends EventEmitter {
       body: null
     };
     
-    // custom handler function
+    // custom handler functions
     this._respondFn = null;
+    this._assertFn = null;
   }
   
   
@@ -101,6 +102,9 @@ class Interceptor extends EventEmitter {
    * @example
    * expect('Content-Type', 'application')
    * expect('some request body')
+   * expect(function (req) {
+   *
+   * })
    *
    * @api public
    */
@@ -119,6 +123,13 @@ class Interceptor extends EventEmitter {
     // status code
     if (arguments.length === 1 && is.number(a)) {
       this._asserts.statusCode = a;
+      
+      return this;
+    }
+    
+    // function
+    if (arguments.length === 1 && is.function(a)) {
+      this._assertFn = a;
       
       return this;
     }
@@ -152,6 +163,7 @@ class Interceptor extends EventEmitter {
     this.body = null;
     this._asserts = null;
     this._respondFn = null;
+    this._assertFn = null;
   }
   
   
@@ -203,6 +215,15 @@ class Interceptor extends EventEmitter {
     if (asserts.body) {
       let error = format('Got %s, expected %s in request body', req.body, asserts.body);
       this._assert(asserts.body === req.body, error);
+    }
+    
+    // custom assert function
+    if (this._assertFn) {
+      try {
+        this._assertFn(req);
+      } catch (err) {
+        this._throw(err);
+      }
     }
   }
   

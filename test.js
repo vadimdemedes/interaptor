@@ -169,6 +169,44 @@ describe ('interaptor', function () {
       body: 'some cool body'
     });
   });
+  
+  it ('assert using custom function and fail', function (done) {
+    intercept('example.org')
+      .post('/some/path')
+      .expect(function (req) {
+        if (req.body === 'some cool body') {
+          throw new Error('Some error');
+        }
+      })
+      .on('error', function (err) {
+        err.message.should.equal('Some error');
+        done();
+      });
+    
+    request({
+      url: 'http://example.org/some/path',
+      method: 'post',
+      body: 'some cool body'
+    });
+  });
+  
+  it ('assert using custom function and continue', function (done) {
+    intercept('example.org')
+      .post('/some/path')
+      .expect(function (req) {
+        if (req.body !== 'some cool body') {
+          throw new Error('Some error');
+        }
+      });
+    
+    request({
+      url: 'http://example.org/some/path',
+      method: 'post',
+      body: 'some cool body'
+    }, function () {
+      done();
+    });
+  });
 });
 
 
