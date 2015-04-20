@@ -28,6 +28,7 @@ class Interceptor extends EventEmitter {
     this._headers = {};
     this._statusCode = 200;
     this._body = null;
+    this._times = 1; // times to intercept, before .disable()
     
     // values to assert
     this._asserts = {
@@ -38,6 +39,22 @@ class Interceptor extends EventEmitter {
     // custom handler functions
     this._respondFn = null;
     this._assertFn = null;
+  }
+  
+  
+  /**
+   * Set to intercept requests N times
+   *
+   * @example
+   * times(2)
+   *
+   * @api public
+   */
+  
+  times (n) {
+    this._times = n;
+    
+    return this;
   }
   
   
@@ -188,7 +205,7 @@ class Interceptor extends EventEmitter {
       this._respondRequest(req, res);
       
       // disable itself
-      this.disable();
+      if (--this._times <= 0) this.disable();
     });
   }
   

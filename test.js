@@ -207,6 +207,44 @@ describe ('interaptor', function () {
       done();
     });
   });
+  
+  it ('intercept multiple times', function (done) {
+    var times = 0;
+    
+    intercept('example.org')
+      .post('/some/path')
+      .times(2)
+      .set(function (req, res) {
+        times++;
+        
+        res.write(times.toString());
+      });
+    
+    request({
+      url: 'http://example.org/some/path',
+      method: 'post'
+    }, function (err, res, body) {
+      res.statusCode.should.equal(200);
+      body.should.equal('1');
+      
+      request({
+        url: 'http://example.org/some/path',
+        method: 'post'
+      }, function (err, res, body) {
+        res.statusCode.should.equal(200);
+        body.should.equal('2');
+
+        request({
+          url: 'http://example.org/some/path',
+          method: 'post'
+        }, function (err, res, body) {
+          res.statusCode.should.equal(404);
+          
+          done();
+        });
+      });
+    });
+  });
 });
 
 
