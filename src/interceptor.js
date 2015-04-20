@@ -160,6 +160,9 @@ class Interceptor extends EventEmitter {
       // respond to request
       // with defined values
       this._respondRequest(req, res);
+      
+      // disable itself
+      this.disable();
     });
   }
   

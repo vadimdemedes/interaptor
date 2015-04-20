@@ -15,14 +15,8 @@ require('chai').should();
 
 
 describe ('interaptor', function () {
-  var rule;
-  
-  afterEach(function () {
-    rule.disable();
-  });
-  
   itEach (['get', 'post', 'put', 'delete'], 'intercept %s request', function (method, done) {
-    rule = intercept('example.org')
+    intercept('example.org')
       [method]('/some/path')
       .set(200)
       .set('intercepted ' + method);
@@ -39,10 +33,9 @@ describe ('interaptor', function () {
   });
   
   it ('set response code', function (done) {
-    rule = intercept('example.org');
-    
-    rule.get('/some/path')
-        .set(401);
+    intercept('example.org')
+      .get('/some/path')
+      .set(401);
     
     request('http://example.org/some/path', function (err, res, body) {
       res.statusCode.should.equal(401);
@@ -53,10 +46,9 @@ describe ('interaptor', function () {
   });
   
   it ('set response headers', function (done) {
-    rule = intercept('example.org');
-    
-    rule.get('/some/path')
-        .set('X-Test-Value', '123');
+    intercept('example.org')
+      .get('/some/path')
+      .set('X-Test-Value', '123');
     
     request('http://example.org/some/path', function (err, res, body) {
       res.statusCode.should.equal(200);
@@ -68,10 +60,9 @@ describe ('interaptor', function () {
   });
   
   it ('set response body', function (done) {
-    rule = intercept('example.org');
-    
-    rule.get('/some/path')
-        .set('intercepted request');
+    intercept('example.org')
+      .get('/some/path')
+      .set('intercepted request');
     
     request('http://example.org/some/path', function (err, res, body) {
       res.statusCode.should.equal(200);
@@ -82,10 +73,9 @@ describe ('interaptor', function () {
   });
   
   it ('set response body in json', function (done) {
-    rule = intercept('example.org');
-    
-    rule.get('/some/path')
-        .set({ key: 'value' });
+    intercept('example.org')
+      .get('/some/path')
+      .set({ key: 'value' });
     
     request('http://example.org/some/path', function (err, res, body) {
       res.statusCode.should.equal(200);
@@ -96,10 +86,9 @@ describe ('interaptor', function () {
   });
   
   it ('assert headers and continue', function (done) {
-    rule = intercept('example.org');
-    
-    rule.get('/some/path')
-        .expect('X-Test-Flag', 'true');
+    intercept('example.org')
+      .get('/some/path')
+      .expect('X-Test-Flag', 'true');
     
     request({
       url: 'http://example.org/some/path',
@@ -110,14 +99,13 @@ describe ('interaptor', function () {
   });
   
   it ('assert headers and fail', function (done) {
-    rule = intercept('example.org');
-    
-    rule.get('/some/path')
-        .expect('X-Test-Flag', 'false')
-        .on('error', function (err) {
-          err.message.should.equal('Got true, expected false in X-Test-Flag header');
-          done();
-        });
+    intercept('example.org')
+      .get('/some/path')
+      .expect('X-Test-Flag', 'false')
+      .on('error', function (err) {
+        err.message.should.equal('Got true, expected false in X-Test-Flag header');
+        done();
+      });
     
     request({
       url: 'http://example.org/some/path',
@@ -128,10 +116,9 @@ describe ('interaptor', function () {
   });
   
   it ('assert body and continue', function (done) {
-    rule = intercept('example.org');
-    
-    rule.post('/some/path')
-        .expect('some cool body');
+    intercept('example.org')
+      .post('/some/path')
+      .expect('some cool body');
     
     request({
       url: 'http://example.org/some/path',
@@ -141,10 +128,9 @@ describe ('interaptor', function () {
   });
   
   it ('assert json body and continue', function (done) {
-    rule = intercept('example.org');
-    
-    rule.post('/some/path')
-        .expect({ key: 'value' });
+    intercept('example.org')
+      .post('/some/path')
+      .expect({ key: 'value' });
     
     request({
       url: 'http://example.org/some/path',
@@ -154,14 +140,13 @@ describe ('interaptor', function () {
   });
   
   it ('assert body and fail', function (done) {
-    rule = intercept('example.org');
-    
-    rule.post('/some/path')
-        .expect('some body')
-        .on('error', function (err) {
-          err.message.should.equal('Got some cool body, expected some body in request body');
-          done();
-        });
+    intercept('example.org')
+      .post('/some/path')
+      .expect('some body')
+      .on('error', function (err) {
+        err.message.should.equal('Got some cool body, expected some body in request body');
+        done();
+      });
     
     request({
       url: 'http://example.org/some/path',
