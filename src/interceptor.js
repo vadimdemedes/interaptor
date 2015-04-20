@@ -22,12 +22,12 @@ class Interceptor extends EventEmitter {
     super();
     
     // keep reference to Interaptor
-    this.interaptor = interaptor;
+    this._interaptor = interaptor;
     
     this.host = host;
-    this.headers = {};
-    this.statusCode = 200;
-    this.body = null;
+    this._headers = {};
+    this._statusCode = 200;
+    this._body = null;
     
     // values to assert
     this._asserts = {
@@ -61,14 +61,14 @@ class Interceptor extends EventEmitter {
       let name = a;
       let value = b;
       
-      this.headers[name] = value;
+      this._headers[name] = value;
       
       return this;
     }
     
     // status code
     if (arguments.length === 1 && is.number(a)) {
-      this.statusCode = a;
+      this._statusCode = a;
       
       return this;
     }
@@ -80,16 +80,16 @@ class Interceptor extends EventEmitter {
       return this;
     }
     
-    // JSON body
-    if (arguments.length === 1 && is.object(a)) {
-      this.body = stringify(a);
+    // plain body
+    if (arguments.length === 1 && is.string(a)) {
+      this._body = a;
       
       return this;
     }
     
-    // plain body
-    if (arguments.length === 1 && is.string(a)) {
-      this.body = a;
+    // JSON body
+    if (arguments.length === 1 && is.object(a)) {
+      this._body = stringify(a);
       
       return this;
     }
@@ -134,16 +134,16 @@ class Interceptor extends EventEmitter {
       return this;
     }
     
-    // JSON body
-    if (arguments.length === 1 && is.object(a)) {
-      this._asserts.body = stringify(a);
+    // plain body
+    if (arguments.length === 1 && is.string(a)) {
+      this._asserts.body = a;
       
       return this;
     }
     
-    // plain body
-    if (arguments.length === 1 && is.string(a)) {
-      this._asserts.body = a;
+    // JSON body
+    if (arguments.length === 1 && is.object(a)) {
+      this._asserts.body = stringify(a);
       
       return this;
     }
@@ -157,10 +157,10 @@ class Interceptor extends EventEmitter {
    */
   
   disable () {
-    this.interaptor.interceptors = this.interaptor.interceptors.filter(interceptor => interceptor != this);
-    this.interaptor = null;
-    this.headers = null;
-    this.body = null;
+    this._interaptor.interceptors = this._interaptor.interceptors.filter(interceptor => interceptor != this);
+    this._interaptor = null;
+    this._headers = null;
+    this._body = null;
     this._asserts = null;
     this._respondFn = null;
     this._assertFn = null;
@@ -236,19 +236,19 @@ class Interceptor extends EventEmitter {
   
   _respondRequest (req, res) {
     // set headers
-    Object.keys(this.headers).forEach(name => {
-      let value = this.headers[name];
+    Object.keys(this._headers).forEach(name => {
+      let value = this._headers[name];
       
       res.setHeader(name, value);
     });
     
-    res.statusCode = this.statusCode;
+    res.statusCode = this._statusCode;
     
     if (this._respondFn) {
       this._respondFn(req, res);
     }
     
-    res.end(this.body);
+    res.end(this._body);
   }
   
   
