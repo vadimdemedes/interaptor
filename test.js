@@ -264,11 +264,11 @@ describe ('interaptor', function () {
   
   it ('intercept using a route-like path', function (done) {
     intercept('example.org')
-      .post('/items/:id')
+      .post('/items/:id/stuff')
       .set('OK');
     
     request({
-      url: 'http://example.org/items/something',
+      url: 'http://example.org/items/something/stuff?key=value',
       method: 'post'
     }, function (err, res, body) {
       res.statusCode.should.equal(200);

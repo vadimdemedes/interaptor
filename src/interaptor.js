@@ -4,6 +4,7 @@
  * Dependencies
  */
 
+const parse = require('url').parse;
 const mitm = require('mitm');
 
 const Interceptor = require('./interceptor');
@@ -57,7 +58,14 @@ class Interaptor {
     // - req.url or req.uri.path
     let method = (req.method || '').toLowerCase();
     let host = req.host || req.headers.host;
-    let path = req.url || (req.uri || {}).path;
+    let path;
+    
+    if (req.url) {
+      let url = parse(req.url);
+      path = url.pathname;
+    } else {
+      path = (req.uri || {}).pathname;
+    }
     
     // find matching interceptors
     let interceptors = this.interceptors.filter(interceptor => {
