@@ -5,6 +5,7 @@
  */
 
 const EventEmitter = require('events').EventEmitter;
+const pathToRegExp = require('path-to-regexp');
 const fetchBody = require('raw-body');
 const stringify = require('json-stringify-safe');
 const methods = require('methods');
@@ -307,7 +308,7 @@ class Interceptor extends EventEmitter {
 methods.forEach(method => {
   Interceptor.prototype[method] = function (path) {
     this.method = method;
-    this.path = path;
+    this.path = is.regexp(path) ? path : pathToRegExp(path);
     
     return this;
   };

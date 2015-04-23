@@ -245,6 +245,38 @@ describe ('interaptor', function () {
       });
     });
   });
+  
+  it ('intercept using a regexp path', function (done) {
+    intercept('example.org')
+      .post(/something/)
+      .set('OK');
+    
+    request({
+      url: 'http://example.org/something',
+      method: 'post'
+    }, function (err, res, body) {
+      res.statusCode.should.equal(200);
+      body.should.equal('OK');
+      
+      done();
+    });
+  });
+  
+  it ('intercept using a route-like path', function (done) {
+    intercept('example.org')
+      .post('/items/:id')
+      .set('OK');
+    
+    request({
+      url: 'http://example.org/items/something',
+      method: 'post'
+    }, function (err, res, body) {
+      res.statusCode.should.equal(200);
+      body.should.equal('OK');
+      
+      done();
+    });
+  });
 });
 
 

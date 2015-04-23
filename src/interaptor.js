@@ -65,7 +65,7 @@ class Interaptor {
       // interceptor is ok for this request
       let methodMatches = interceptor.method && method ? (interceptor.method === method) : true;
       let hostMatches   = interceptor.host && host ? (interceptor.host === host) : true;
-      let pathMatches   = interceptor.path && path ? (interceptor.path === path) : true;
+      let pathMatches   = interceptor.path && path ? (interceptor.path.test(path)) : true;
       
       return methodMatches && hostMatches && pathMatches;
     });
